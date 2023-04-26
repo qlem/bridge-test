@@ -1,0 +1,1 @@
+export { getAccounts } from './account';
