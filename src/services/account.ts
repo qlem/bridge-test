@@ -1,4 +1,4 @@
-import differenceBy from 'lodash/differenceBy';
+import { differenceBy, uniqBy } from 'lodash';
 import { Account, AccountData, PagingData } from '../types';
 import { pageLimit, pageAccountPattern } from '../constants';
 import { getTransactions } from './transaction';
@@ -30,8 +30,12 @@ async function getAccounts(): Promise<Account[]> {
         const result: Account[] = [];
         const accountsData: AccountData[] = [];
         while (page < pageLimit) {
-            const pagedAccounts = await fetchAccountPage(page);
-            const filteredAccounts = differenceBy(pagedAccounts.accounts, accountsData, ({acc_number}) => acc_number);
+            const accountsPage = await fetchAccountPage(page);
+            const filteredAccounts = differenceBy(
+                uniqBy(accountsPage.accounts, ({ acc_number }) => acc_number),
+                accountsData,
+                ({ acc_number }) => acc_number
+            );
 
             const promises = filteredAccounts.map(({ acc_number }) => getTransactions(acc_number));
             const accountsWithTransactions = await Promise.all(promises);
@@ -50,8 +54,8 @@ async function getAccounts(): Promise<Account[]> {
             })
 
             accountsData.push(...filteredAccounts);
-            if (pagedAccounts.links.next != '') {
-                page = getNextPage(pagedAccounts.links.next);
+            if (accountsPage.links.next != '') {
+                page = getNextPage(accountsPage.links.next);
             } else {
                 return result;
             }
