@@ -66,6 +66,17 @@ npm run test
 
 ---
 
+## Environment
+
+`.env` file is required in dev environment.
+
+```
+API_URL="https://dsague.fr/"
+API_KEY="my_api_key"
+```
+
+---
+
 ## Swagger
 
 Here is the server swagger : https://dsague.fr/swaggerui/

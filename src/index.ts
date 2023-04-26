@@ -1,5 +1,8 @@
-const main = () => {
-  console.log('Hello world');
+import { Accounts } from './http';
+
+const main = async () => {
+  const accounts = await Accounts();
+  console.log(accounts);
 };
 
 main();
